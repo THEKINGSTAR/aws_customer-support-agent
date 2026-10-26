@@ -65,11 +65,10 @@ os.environ["BYPASS_TOOL_CONSENT"] = "true"
 # REGION:     your AWS region, e.g. "us-east-1"
 # MEMORY_ID   format: shown in the AgentCore Memory console
 
-GATEWAY_URL = "https://customersupportgateway-ikb8wzrilr.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"   # TODO: Replace with your Gateway URL
-KB_ID       = "NMGTQBNXSP"                              # TODO: Replace with your Knowledge Base ID
-REGION      = "us-east-1"                               # TODO: Replace with your AWS region
-MEMORY_ID   = "CustomerSupportMemory-YDjBX4A6kg"        # TODO: Replace with your Memory ID
-POINT_VALUE_USD = 0.01  # Value of one loyalty point in USD (e.g., 1 point = $0.01)
+GATEWAY_URL = "https://customersupportgateway-ikb8wzrilr.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"     # TODO: Replace with your Gateway URL
+KB_ID       = "NMGTQBNXSP"                                                                                          # TODO: Replace with your Knowledge Base ID
+REGION      = "us-east-1"                                                                                           # TODO: Replace with your AWS region
+MEMORY_ID   = "CustomerSupportMemory-YDjBX4A6kg"                                                                    # TODO: Replace with your Memory ID
 
 
 # ── TODO 3 — Model and Clients ────────────────────────────────────────────────
@@ -199,6 +198,9 @@ class MemoryHook(HookProvider):
             if not messages:
                 return
             last = messages[-1]
+            if last.get("role") != "user":
+                return
+            
             user_query = self._plain_text_message(last)
             if user_query is None:
                 return
@@ -347,6 +349,8 @@ def search_knowledge_base(query: str) -> str:
 #   4. Include a fallback that computes only the tier discount if the
 #      Code Interpreter is unavailable
 
+POINT_VALUE_USD = 0.01  # Value of one loyalty point in USD (e.g., 1 point = $0.01)
+
 @tool
 def calculate_loyalty_discount(
     loyalty_points: int,
@@ -405,17 +409,17 @@ print(json.dumps({{
     "points_redeemed": points_redeemed,
     "points_value": points_value,
     "subtotal_after_points": subtotal_after_points,
-    "tier_discount_rate": tier_rate,
+    "tier_discount_pct": round(tier_rate * 100, 2),
     "tier_discount": tier_discount,
     "final_total": final_total,
     "total_savings": total_savings,
     "points_earned": points_earned,
     "remaining_points": remaining_points,
 }}))
-"""  # Replace with your code string
+"""  
 
+    # TODO: Execute the code using code_session and return the result
     try:
-        # TODO: Execute the code using code_session and return the result
         with code_session(REGION) as session:
             response = session.invoke(
                 "executeCode",
@@ -426,23 +430,28 @@ print(json.dumps({{
                 },
             )
             for event in response["stream"]:
-                return json.dumps(event["result"])
+                stdout = event["result"]["structuredContent"]["stdout"]
+                return stdout.strip()
         return json.dumps({"error": "Code Interpreter returned no result."})
 
+    # TODO: Implement fallback calculation using tier discount only
     except Exception as e:
-        # TODO: Implement fallback calculation using tier discount only
+
         logger.error(f"Code Interpreter unavailable, using fallback: {e}")
         tier_rates = {"Silver": 0.00, "Gold": 0.10, "Platinum": 0.15}
         rate = tier_rates.get(tier, 0.0)
         discount = round(order_total * rate, 2)
         return json.dumps({
             "note": "Fallback calculation (tier discount only; points not applied).",
+            "calculation_mode": "fallback",
             "tier": tier,
             "order_total": order_total,
-            "tier_discount_rate": rate,
+            "points_redeemed": 0,
+            "tier_discount_pct": round(rate * 100, 2),
             "tier_discount": discount,
             "final_total": round(order_total - discount, 2),
-        })
+            "remaining_points": loyalty_points,
+            })
 
 # ── TODO 8 — Agent Entrypoint ─────────────────────────────────────────────────
 # Implement the invoke() function decorated with @app.entrypoint.
@@ -510,7 +519,6 @@ async def invoke(payload, context=None):
             agent_core_browser.browser,
         ]
  
-        # ASSUMPTION: the gateway needs no auth header. If INSTRUCTIONS.md says it
         # uses a bearer token, pass headers={"Authorization": f"Bearer {token}"}.
         mcp_client = MCPClient(
                                 lambda: aws_iam_streamablehttp_client(
