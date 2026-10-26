@@ -1,0 +1,13 @@
+# Project Reflection — Customer Support AI Agent
+
+## Design Decision
+
+One important design decision was to use Amazon Bedrock AgentCore Gateway as a unified interface for the agent's external tools. I connected the `order-tracker` Lambda through an API Gateway REST API and exposed the `refund-processor` Lambda directly through the Gateway. This design keeps the business logic in separate Lambda functions while allowing the Strands agent to discover and use the tools through MCP. I also used an Amazon Bedrock Knowledge Base with an S3 data source and Titan Embeddings to support product and policy questions.
+
+## Challenge and Resolution
+
+The main challenge was configuring AWS permissions and authentication across the services. The initial Gateway creation encountered a target-name validation error, a missing Lambda invocation permission, and a Cognito permission restriction in the lab environment. I corrected the target name, configured the required IAM permissions, and used IAM authentication for the Gateway. During agent deployment, CloudWatch logs helped identify additional issues, including a missing Python dependency and insufficient permissions for Memory and Knowledge Base operations. I added `mcp-proxy-for-aws` to the project dependencies, updated the lockfile, corrected the configuration, and redeployed the agent. I verified that the Gateway exposed all six tools and that deployed invocations successfully answered a general greeting and retrieved product information from the Knowledge Base.
+
+## Production Improvements
+
+For production, I would strengthen security through least-privilege IAM policies, validate all tool inputs, and add automated integration tests covering order tracking, refunds, knowledge retrieval, memory recall, discount calculations, and browser access. I would configure CloudWatch notifications for critical alarms, monitor traces and structured logs, and add dashboards for latency, error rates, and tool failures. I would also improve response grounding so that the agent clearly distinguishes verified product information from assumptions. Finally, I would review cost controls, resource retention, and failure recovery before serving real customers.

@@ -1,0 +1,122 @@
+default_agent: BedrockAgentCore
+agents:
+  main:
+    name: main
+    language: python
+    node_version: '20'
+    entrypoint: /home/king/git/udacity-future-AWS_Agent_Engineer/aws_agent_project_2/customer-support-agent/main.py
+    deployment_type: direct_code_deploy
+    runtime_type: PYTHON_3_13
+    platform: linux/arm64
+    container_runtime: null
+    source_path: /home/king/git/udacity-future-AWS_Agent_Engineer/aws_agent_project_2/customer-support-agent
+    aws:
+      execution_role: arn:aws:iam::025156916372:role/AmazonBedrockAgentCoreSDKRuntime-us-east-1-0d6e4079e3
+      execution_role_auto_create: false
+      account: 025156916372
+      region: us-east-1
+      ecr_repository: null
+      ecr_auto_create: false
+      s3_path: s3://bedrock-agentcore-codebuild-sources-025156916372-us-east-1
+      s3_auto_create: false
+      network_configuration:
+        network_mode: PUBLIC
+        network_mode_config: null
+      protocol_configuration:
+        server_protocol: HTTP
+      observability:
+        enabled: true
+      lifecycle_configuration:
+        idle_runtime_session_timeout: null
+        max_lifetime: null
+    bedrock_agentcore:
+      agent_id: main-7bzJCHFD44
+      agent_arn: arn:aws:bedrock-agentcore:us-east-1:025156916372:runtime/main-7bzJCHFD44
+      agent_session_id: c602c540-5b04-4b41-9ca2-f5a0a83c41c4
+    codebuild:
+      project_name: null
+      execution_role: null
+      source_bucket: null
+    memory:
+      mode: NO_MEMORY
+      memory_id: null
+      memory_arn: null
+      memory_name: null
+      event_expiry_days: 30
+      first_invoke_memory_check_done: false
+      was_created_by_toolkit: false
+    identity:
+      credential_providers: []
+      workload: null
+    aws_jwt:
+      enabled: false
+      audiences: []
+      signing_algorithm: ES384
+      issuer_url: null
+      duration_seconds: 300
+    authorizer_configuration: null
+    request_header_configuration: null
+    oauth_configuration: null
+    api_key_env_var_name: null
+    api_key_credential_provider_name: null
+    is_generated_by_agentcore_create: false
+  BedrockAgentCore:
+    name: BedrockAgentCore
+    language: python
+    node_version: '20'
+    entrypoint: /home/king/git/udacity-future-AWS_Agent_Engineer/aws_agent_project_2/customer-support-agent/main.py
+    deployment_type: direct_code_deploy
+    runtime_type: PYTHON_3_13
+    platform: linux/arm64
+    container_runtime: null
+    source_path: /home/king/git/udacity-future-AWS_Agent_Engineer/aws_agent_project_2/customer-support-agent
+    aws:
+      execution_role: arn:aws:iam::025156916372:role/AmazonBedrockAgentCoreSDKRuntime-us-east-1-0e89f010fb
+      execution_role_auto_create: false
+      account: 025156916372
+      region: us-east-1
+      ecr_repository: null
+      ecr_auto_create: false
+      s3_path: s3://bedrock-agentcore-codebuild-sources-025156916372-us-east-1
+      s3_auto_create: false
+      network_configuration:
+        network_mode: PUBLIC
+        network_mode_config: null
+      protocol_configuration:
+        server_protocol: HTTP
+      observability:
+        enabled: true
+      lifecycle_configuration:
+        idle_runtime_session_timeout: null
+        max_lifetime: null
+    bedrock_agentcore:
+      agent_id: BedrockAgentCore-3ouBWj5PX6
+      agent_arn: arn:aws:bedrock-agentcore:us-east-1:025156916372:runtime/BedrockAgentCore-3ouBWj5PX6
+      agent_session_id: 9b68f91f-73c0-487e-b1db-ab5c16b00031
+    codebuild:
+      project_name: null
+      execution_role: null
+      source_bucket: null
+    memory:
+      mode: STM_ONLY
+      memory_id: BedrockAgentCore_mem-FTU10v59dA
+      memory_arn: arn:aws:bedrock-agentcore:us-east-1:025156916372:memory/BedrockAgentCore_mem-FTU10v59dA
+      memory_name: BedrockAgentCore_mem
+      event_expiry_days: 30
+      first_invoke_memory_check_done: true
+      was_created_by_toolkit: true
+    identity:
+      credential_providers: []
+      workload: null
+    aws_jwt:
+      enabled: false
+      audiences: []
+      signing_algorithm: ES384
+      issuer_url: null
+      duration_seconds: 300
+    authorizer_configuration: null
+    request_header_configuration: null
+    oauth_configuration: null
+    api_key_env_var_name: null
+    api_key_credential_provider_name: null
+    is_generated_by_agentcore_create: false
