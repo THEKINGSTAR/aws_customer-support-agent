@@ -1,0 +1,33 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "bedrock:Retrieve",
+            "Resource": "arn:aws:bedrock:us-east-1:025156916372:knowledge-base/FO66K3FCDE"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "bedrock-agentcore:GetMemory",
+                "bedrock-agentcore:RetrieveMemoryRecords",
+                "bedrock-agentcore:CreateEvent"
+            ],
+            "Resource": [
+                "arn:aws:bedrock-agentcore:us-east-1:025156916372:memory/CustomerSupportMemory-9q6x7c3Lni",
+                "arn:aws:bedrock-agentcore:us-east-1:025156916372:memory/CustomerSupportMemory-9q6x7c3Lni/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "bedrock-agentcore:StartBrowserSession",
+                "bedrock-agentcore:StopBrowserSession",
+                "bedrock-agentcore:GetBrowserSession",
+                "bedrock-agentcore:UpdateBrowserStream",
+                "bedrock-agentcore:ConnectBrowserAutomationStream"
+            ],
+            "Resource": "arn:aws:bedrock-agentcore:us-east-1:aws:browser/aws.browser.v1"
+        }
+    ]
+}
