@@ -65,10 +65,10 @@ os.environ["BYPASS_TOOL_CONSENT"] = "true"
 # REGION:     your AWS region, e.g. "us-east-1"
 # MEMORY_ID   format: shown in the AgentCore Memory console
 
-GATEWAY_URL = "https://customersupportgateway-ikb8wzrilr.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"     # TODO: Replace with your Gateway URL
-KB_ID       = "NMGTQBNXSP"                                                                                          # TODO: Replace with your Knowledge Base ID
+GATEWAY_URL = "https://customersupportgateway-sh3vpxysxz.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"     # TODO: Replace with your Gateway URL
+KB_ID       = "FO66K3FCDE"                                                                                          # TODO: Replace with your Knowledge Base ID
 REGION      = "us-east-1"                                                                                           # TODO: Replace with your AWS region
-MEMORY_ID   = "CustomerSupportMemory-YDjBX4A6kg"                                                                    # TODO: Replace with your Memory ID
+MEMORY_ID   = "CustomerSupportMemory-9q6x7c3Lni"                                                                    # TODO: Replace with your Memory ID
 
 
 # ── TODO 3 — Model and Clients ────────────────────────────────────────────────
@@ -315,6 +315,11 @@ def search_knowledge_base(query: str) -> str:
         resp = _bedrock_runtime.retrieve(
             knowledgeBaseId=KB_ID,
             retrievalQuery={"text": query},
+            retrievalConfiguration={
+                "managedSearchConfiguration": {
+                    "numberOfResults": 5,
+                }
+            },
         )
         results = resp.get("retrievalResults", [])
         if not results:
